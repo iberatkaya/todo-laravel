@@ -7,14 +7,14 @@ use App\Models\Note;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests;
 
     public function getNotes(){
-        $notes = Note::orderBy('created_at', 'desc')->get();
-        error_log(json_encode($notes));
+        $notes = Note::where('owner_id', Auth::id())->orderBy('created_at', 'desc')->get();
     
         return view('home', ["notes" => $notes]);
     }
@@ -34,6 +34,7 @@ class NoteController extends Controller
     
         $note = new Note;
         $note->name = $request->name;
+        $note->owner_id = Auth::id();
         $note->done = false;
         $note->save();
     
@@ -56,6 +57,6 @@ class NoteController extends Controller
             Note::where("id", $key)->update(["done" => $val == "1"]);
         }
     
-        return redirect()->back()->with('success_message','any message you want');
+        return redirect()->back();
     }
 }

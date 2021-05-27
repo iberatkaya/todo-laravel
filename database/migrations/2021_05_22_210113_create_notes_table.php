@@ -18,6 +18,8 @@ class CreateNotesTable extends Migration
             $table->string("name");
             $table->boolean("done");
             $table->timestamps();
+            $table->bigInteger('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users');
         });
     }
 

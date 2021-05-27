@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Models\Note;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,19 @@ use App\Http\Controllers\NoteController;
 
 Route::get('/', [NoteController::class, "getNotes"]);
 
-Route::post('/addnote', [NoteController::class, "addNote"]);
 
+Route::get('/login', function () {
+    return view("login");
+});
 
-Route::post('/updatenotes', [NoteController::class, "updateNotes"]);
+Route::get('/signup', function () {
+    return view("sign_up");
+});
+
+Route::post('/login', [AuthController::class, "login"]);
+Route::post('/signup', [AuthController::class, "signup"]);
+Route::post('/logout', [AuthController::class, "logout"]);
+
+Route::post('/addnote', [NoteController::class, "addNote"])->middleware('auth');
+
+Route::post('/updatenotes', [NoteController::class, "updateNotes"])->middleware('auth');
